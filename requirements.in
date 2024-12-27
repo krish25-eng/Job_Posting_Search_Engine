@@ -1,0 +1,9 @@
+pandas
+numpy
+
+transformers
+sentence-transformers
+torch
+
+openai
+streamlit

@@ -5,10 +5,16 @@ from openai import OpenAI
 
 import pickle
 import asyncio
-from tqdm.autonotebook import tqdm
+from tqdm.autonotebook import tqdm, trange
 import numpy as np
 
 build_project_path = os.environ['BUILD_PROJECT_PATH']
+synthetic_data_path = os.path.join(build_project_path, 'synthetic_data')
+
+if synthetic_data_path not in sys.path:
+    sys.path.append(synthetic_data_path)
+
+from gpt_parsing import parse_gpt_response
 
 data_path = os.path.join(build_project_path, 'synthetic_data', 'data')
 
@@ -59,43 +65,46 @@ async def async_make_api_call(client, model_name, messages, perturbation_std=0.0
     return response
 
 
-# async def async_main_stubborn(query_df, client, model_name, output_path=None, multi_level=False, delay=2, giveup_after=10):
+async def async_main_stubborn(all_query_titles, client, model_name, output_path=None, chunk_size=5, num_examples_per_title=5, delay=2, giveup_after=10):
 
-#     responses_dict = {}
-#     for row in tqdm(query_df.itertuples(), total=len(query_df)):
-#         attempts = 0
-#         while attempts < giveup_after:
-#             if attempts > 0:
-#                 print(f'Attempt {attempts} for job ID {row.ID}')
-#             query_job_title = row.TITLE_RAW
-#             query_job_description = row.summarised_jd
-#             if multi_level:
-#                 query_job_education_list= get_education_range(row.MIN_EDULEVELS_NAME, row.MAX_EDULEVELS_NAME)
-#                 query_job_education = convert_to_gpt_string(query_job_education_list)
-#             else:
-#                 query_job_education = row.MIN_EDULEVELS_NAME
-#             api_task = asyncio.create_task(async_make_api_call(client, model_name, generate_relevance_messages(query_job_title, query_job_description, query_job_education, multi_level=multi_level),  perturbation_std=0.1))
-#             await asyncio.sleep(delay)
-#             response = await api_task
-#             if multi_level:
-#                 parsed_response = parse_gpt_field_lists_multi(relevence_categories, response.choices[0].message.content, len(query_job_education_list))
-#             else:
-#                 parsed_response = parse_gpt_field_lists(relevence_categories, response.choices[0].message.content)
-#             if parsed_response:
-#                 if multi_level:
-#                     for i, education_level in enumerate(query_job_education_list):
-#                         responses_dict[(row.ID, education_level)] = parsed_response[i]
-#                 else:
-#                     responses_dict[row.ID] = parsed_response
-#                 break
-#             elif attempts > 2:
-#                 print('-------------------------------')
-#                 print('Output:')
-#                 print(response.choices[0].message.content)
-#             attempts += 1
+    responses_dict = {}
+    for i in trange(0, len(all_query_titles), chunk_size):
+        attempts = 0
+        current_query_titles = all_query_titles[i:i+chunk_size]
+        while attempts < giveup_after:
+            if attempts > 0:
+                print(f'Attempt {attempts} for chunk {i // chunk_size}')
+            api_task = asyncio.create_task(
+                async_make_api_call(
+                    client,
+                    model_name,
+                    generate_prompt(
+                        query_job_titles=current_query_titles,
+                        num_examples_per_title=num_examples_per_title
+                    ),
+                    perturbation_std=0.1
+                )
+            )
+            await asyncio.sleep(delay)
+            response = await api_task
+            parsed_response = parse_gpt_response(
+                gpt_output=response.choices[0].message.content,
+                num_query_titles=chunk_size,
+                num_examples_per_query_title=num_examples_per_title,
+                throw_exception_on_failure=False
+            )
+            if parsed_response:
+                for query_title, response_list in zip(current_query_titles, parsed_response):
+                    responses_dict[query_title] = response_list
+                break
+            elif attempts > 2:
+                print('-------------------------------')
+                print('Output:')
+                print(response.choices[0].message.content)
+            attempts += 1
 
-#         if output_path:
-#             with open(output_path, 'wb') as f:
-#                 pickle.dump(responses_dict, f)
+        if output_path:
+            with open(output_path, 'wb') as f:
+                pickle.dump(responses_dict, f)
 
-#     return responses_dict
+    return responses_dict

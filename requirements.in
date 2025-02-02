@@ -9,6 +9,7 @@ tensorboard
 
 openai
 streamlit
+watchdog
 
 ipykernel
 ipywidgets

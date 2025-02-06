@@ -8,6 +8,7 @@ import asyncio
 from tqdm.autonotebook import tqdm, trange
 import numpy as np
 
+#TODO: Hard code this or set the path in the environment variable
 build_project_path = os.environ['BUILD_PROJECT_PATH']
 synthetic_data_path = os.path.join(build_project_path, 'synthetic_data')
 
@@ -36,6 +37,7 @@ rng = np.random.default_rng()
 
 def get_client():
     return OpenAI(
+        # TODO: Make sure this API key is set in the environment variable (best not to hard code it)
         api_key=os.environ["SAMBANOVA_API_KEY"],
         base_url="https://api.sambanova.ai/v1",
     )
@@ -47,6 +49,7 @@ def format_query_title_list(query_job_titles):
     return output_string
     
 def generate_prompt(query_job_titles : list[str] | np.ndarray, num_examples_per_title=5):
+    # Spoofing the assistant response to encourage a certain format
     return [
         {"role": "system", "content": "You are an expert in recruitment, staffing and HR."},
         {"role": "user", "content": f"{base_prompt.format(format_query_title_list(example_query_titles))}"},
@@ -55,7 +58,7 @@ def generate_prompt(query_job_titles : list[str] | np.ndarray, num_examples_per_
     ]
 
 async def async_make_api_call(client, model_name, messages, perturbation_std=0.0):
-    # Adding perturbation to the temperature to avoid cached responses
+    # Adding perturbation to the temperature to avoid cached responses (I actually think they patched this away unfortunately!!)
     response = client.chat.completions.create(
             model=model_name,
             messages=messages,

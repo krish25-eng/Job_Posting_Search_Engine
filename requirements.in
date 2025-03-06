@@ -6,8 +6,11 @@ sentence-transformers[train]
 torch
 tensorboard
 
+matplotlib
+scikit-learn
 
 openai
+google-genai
 streamlit
 watchdog
 

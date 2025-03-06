@@ -34,7 +34,9 @@ attrs==24.3.0
 blinker==1.9.0
     # via streamlit
 cachetools==5.5.0
-    # via streamlit
+    # via
+    #   google-auth
+    #   streamlit
 certifi==2024.12.14
     # via
     #   httpcore
@@ -48,6 +50,10 @@ comm==0.2.2
     # via
     #   ipykernel
     #   ipywidgets
+contourpy==1.3.1
+    # via matplotlib
+cycler==0.12.1
+    # via matplotlib
 datasets==3.2.0
     # via sentence-transformers
 debugpy==1.8.11
@@ -68,6 +74,8 @@ filelock==3.16.1
     #   huggingface-hub
     #   torch
     #   transformers
+fonttools==4.56.0
+    # via matplotlib
 frozenlist==1.5.0
     # via
     #   aiohttp
@@ -81,6 +89,10 @@ gitdb==4.0.11
     # via gitpython
 gitpython==3.1.43
     # via streamlit
+google-auth==2.38.0
+    # via google-genai
+google-genai==1.2.0
+    # via -r requirements.in
 grpcio==1.68.1
     # via tensorboard
 h11==0.14.0
@@ -133,6 +145,8 @@ jupyter-core==5.7.2
     #   jupyter-client
 jupyterlab-widgets==3.0.13
     # via ipywidgets
+kiwisolver==1.4.8
+    # via matplotlib
 markdown==3.7
     # via tensorboard
 markdown-it-py==3.0.0
@@ -141,6 +155,8 @@ markupsafe==3.0.2
     # via
     #   jinja2
     #   werkzeug
+matplotlib==3.10.1
+    # via -r requirements.in
 matplotlib-inline==0.1.7
     # via
     #   ipykernel
@@ -165,7 +181,9 @@ numpy==2.2.1
     # via
     #   -r requirements.in
     #   accelerate
+    #   contourpy
     #   datasets
+    #   matplotlib
     #   pandas
     #   pydeck
     #   scikit-learn
@@ -182,6 +200,7 @@ packaging==24.2
     #   datasets
     #   huggingface-hub
     #   ipykernel
+    #   matplotlib
     #   streamlit
     #   tensorboard
     #   transformers
@@ -196,6 +215,7 @@ pexpect==4.9.0
     # via ipython
 pillow==11.0.0
     # via
+    #   matplotlib
     #   sentence-transformers
     #   streamlit
 platformdirs==4.3.6
@@ -222,8 +242,16 @@ pyarrow==18.1.0
     # via
     #   datasets
     #   streamlit
+pyasn1==0.6.1
+    # via
+    #   pyasn1-modules
+    #   rsa
+pyasn1-modules==0.4.1
+    # via google-auth
 pydantic==2.10.4
-    # via openai
+    # via
+    #   google-genai
+    #   openai
 pydantic-core==2.27.2
     # via pydantic
 pydeck==0.9.1
@@ -232,9 +260,12 @@ pygments==2.18.0
     # via
     #   ipython
     #   rich
+pyparsing==3.2.1
+    # via matplotlib
 python-dateutil==2.9.0.post0
     # via
     #   jupyter-client
+    #   matplotlib
     #   pandas
 pytz==2024.2
     # via pandas
@@ -257,6 +288,7 @@ regex==2024.11.6
 requests==2.32.3
     # via
     #   datasets
+    #   google-genai
     #   huggingface-hub
     #   streamlit
     #   transformers
@@ -266,12 +298,16 @@ rpds-py==0.22.3
     # via
     #   jsonschema
     #   referencing
+rsa==4.9
+    # via google-auth
 safetensors==0.4.5
     # via
     #   accelerate
     #   transformers
 scikit-learn==1.6.0
-    # via sentence-transformers
+    # via
+    #   -r requirements.in
+    #   sentence-transformers
 scipy==1.14.1
     # via
     #   scikit-learn
@@ -346,6 +382,7 @@ typing-extensions==4.12.2
     # via
     #   altair
     #   anyio
+    #   google-genai
     #   huggingface-hub
     #   openai
     #   pydantic
@@ -360,6 +397,8 @@ watchdog==6.0.0
     # via -r requirements.in
 wcwidth==0.2.13
     # via prompt-toolkit
+websockets==14.2
+    # via google-genai
 werkzeug==3.1.3
     # via tensorboard
 widgetsnbextension==4.0.13

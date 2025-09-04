@@ -7,7 +7,10 @@ import pandas as pd
 import torch
 from tqdm import trange
 
-build_project_path = os.environ['BUILD_PROJECT_PATH']
+#build_project_path = os.environ['BUILD_PROJECT_PATH']
+#streamlit_app_data_path = os.path.join(build_project_path, 'streamlit_app', 'data')
+build_project_path = r('C:\Users\L110006\OneDrive - Eli Lilly and Company\personal files\build project\fine-tuning-build-project', 'streamlit_app', 'data')
+
 streamlit_app_data_path = os.path.join(build_project_path, 'streamlit_app', 'data')
 
 def get_device():

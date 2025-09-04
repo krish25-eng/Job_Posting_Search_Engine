@@ -9,7 +9,8 @@ from tqdm.autonotebook import tqdm, trange
 import numpy as np
 
 #TODO: Hard code this or set the path in the environment variable
-build_project_path = os.environ['BUILD_PROJECT_PATH']
+#build_project_path = os.environ['BUILD_PROJECT_PATH']
+build_project_path = r"C:\Users\L110006\OneDrive - Eli Lilly and Company\personal files\build project\fine-tuning-build-project"
 synthetic_data_path = os.path.join(build_project_path, 'synthetic_data')
 
 if synthetic_data_path not in sys.path:
@@ -17,7 +18,8 @@ if synthetic_data_path not in sys.path:
 
 from gpt_parsing import parse_gpt_response
 
-data_path = os.path.join(build_project_path, 'synthetic_data', 'data')
+#ori#data_path = os.path.join(build_project_path,'fine-tuning-build-project', 'synthetic_data', 'data')
+data_path = os.path.join(build_project_path,'synthetic_data', 'data')
 
 with open(os.path.join(data_path, 'initial_prompt.txt'), 'r') as f:
     base_prompt = f.read()
@@ -35,12 +37,24 @@ with open(os.path.join(data_path, 'follow_up_prompt.txt'), 'r') as f:
 
 rng = np.random.default_rng()
 
+# Set env var correctly (no trailing comma)
+os.environ["SAMBANOVA_API_KEY"] = "f92f994d-86bb-454e-984d-8182b361594f"
+
 def get_client():
     return OpenAI(
-        # TODO: Make sure this API key is set in the environment variable (best not to hard code it)
-        api_key=os.environ["SAMBANOVA_API_KEY"],
+        api_key = "829993a9-ff57-414c-912d-58212968888b",
+        #api_key=os.environ["SAMBANOVA_API_KEY"],
         base_url="https://api.sambanova.ai/v1",
     )
+
+#def get_client():
+#    return OpenAI(
+#        # TODO: Make sure this API key is set in the environment variable (best not to hard code it)
+#        SAMBANOVA_API_KEY = "829993a9-ff57-414c-912d-58212968888b",
+#        # api_key=os.environ["8841f010-0daa-4701-bdaf-89937409bac7"],
+#        api_key=os.environ["SAMBANOVA_API_KEY"],
+#        base_url="https://api.sambanova.ai/v1",
+#    )
 
 def format_query_title_list(query_job_titles):
     output_string = ''
@@ -68,7 +82,7 @@ async def async_make_api_call(client, model_name, messages, perturbation_std=0.0
     return response
 
 
-async def async_main_stubborn(all_query_titles, client, model_name, output_path=None, chunk_size=5, num_examples_per_title=5, delay=2, giveup_after=10):
+async def async_main_stubborn(all_query_titles, client, model_name, output_path=None, chunk_size=2, num_examples_per_title=2, delay=2, giveup_after=10):
 
     responses_dict = {}
     for i in trange(0, len(all_query_titles), chunk_size):

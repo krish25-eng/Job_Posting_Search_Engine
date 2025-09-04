@@ -59,7 +59,7 @@ if "app_state" not in st.session_state:
 # ----- Functions for loading resources -----
 @st.cache_resource
 def load_fine_tuned_embeddings():
-    embeddings = np.load(os.path.join('data', 'fine_tuned_embeddings.npy'))
+    embeddings = np.load(os.path.join('streamlit_app','data', 'fine_tuned_embeddings.npy'))
     return embeddings
 
 @st.cache_resource
